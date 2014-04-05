@@ -11,6 +11,9 @@ Instructions
 python challenge.py
 ```
 
+Required packages (install using `apt-get` on Debian Wheezy):
+ - `python-requests`
+
 See the TODOs in the Python file to switch from locally stored test files to actually downloading files from the [Onionoo service] [Onionoo].
 
 Output

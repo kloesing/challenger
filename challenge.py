@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import urllib2
 import json
 import optparse
 import os
 import sys
 from datetime import timedelta, datetime
+from lib.onion import download_documents
 
 
 def main():
@@ -71,18 +71,6 @@ def download_and_combine_documents(out_path, resource_name, fingerprints):
     combined_document = combine_downloads(downloads)
     write_combined_document_to_disk(out_path, combined_document)
 
-def download_documents(resource_name, fingerprints):
-    downloads = []
-    for fingerprint in fingerprints:
-        request = 'https://onionoo.torproject.org/%s?lookup=%s' % (
-                   resource_name, fingerprint, )
-        try:
-            response = urllib2.urlopen(request)
-        except urllib2.HTTPError, error:
-            print("Error " + str(error.code) + ": " + error.reason)
-        downloads.append(response.read())
-    return downloads
-
 def read_documents_from_disk(resource_name, fingerprints):
     # TODO Take me out after testing
     downloads = []
@@ -92,7 +80,7 @@ def read_documents_from_disk(resource_name, fingerprints):
             document_file = open(document_path)
             document_content = document_file.read()
             document_file.close()
-            downloads.append(document_content)
+            downloads.append(json.loads(document_content))
     return downloads
 
 def combine_downloads(downloads):
@@ -107,8 +95,7 @@ def combine_downloads(downloads):
     and bridges.
     """
     documents = []
-    for download in downloads:
-        download_dict = json.loads(download)
+    for download_dict in downloads:
         documents.extend(download_dict['relays'])
         documents.extend(download_dict['bridges'])
     return combine_documents(documents)

@@ -5,6 +5,7 @@ import optparse
 import os
 import sys
 from datetime import timedelta, datetime
+from lib.onion import download_documents
 
 
 def main():
@@ -66,8 +67,8 @@ def read_fingerprints(fingerprints_path):
 
 def download_and_combine_documents(out_path, resource_name, fingerprints):
     # TODO put me in after testing
-    #downloads = download_documents(resource_name, fingerprints)
-    downloads = read_documents_from_disk(resource_name, fingerprints)
+    downloads = download_documents(resource_name, fingerprints)
+    #downloads = read_documents_from_disk(resource_name, fingerprints)
     combined_document = combine_downloads(downloads)
     write_combined_document_to_disk(out_path, combined_document)
 

@@ -136,10 +136,15 @@ def combine_graphs(graphs):
                 histories[key] = [value]
     combined_graph = {}
     for key, value in histories.iteritems():
-        combined_graph[key] = combine_histories(value)
+        combined_history = combine_histories(key, value)
+        if combined_history:
+            combined_graph[key] = combined_history
     return combined_graph
 
-def combine_histories(histories):
+time_periods = {'3_days':3, '1_week':7, '1_month':31, '3_months':92,
+                '1_year':366, '5_years':1830}
+
+def combine_histories(time_period, histories):
     """
     Combine an arbitrary number of graphs for a given time period into a
     single graph.  The combined graph will range from max(first) to
@@ -161,21 +166,29 @@ def combine_histories(histories):
                 else:
                     values[current] = [denormalized_value]
             current = current + timedelta(seconds=history['interval'])
-    new_first = datetime.strptime(history['first'], '%Y-%m-%d %H:%M:%S')
-    new_last = datetime.strptime(history['last'], '%Y-%m-%d %H:%M:%S')
+    new_first, new_last = None, None
     new_interval = max(interval)
-    new_current = new_first
+    new_current = datetime.strptime(min(first), '%Y-%m-%d %H:%M:%S')
+    last_last = datetime.strptime(max(last), '%Y-%m-%d %H:%M:%S')
     new_denormalized_values = []
     new_max = 0
-    while new_current <= new_last:
-        if new_current in values:
+    cutoff = datetime.now() - timedelta(days=time_periods[time_period])
+    while new_current <= last_last:
+        if new_current < cutoff:
+            pass
+        elif new_current in values:
             new_value = sum(values[new_current])
             new_denormalized_values.append(new_value)
             if new_value > new_max:
                 new_max = new_value
+            if not new_first:
+                new_first = new_current
+            new_last = new_current
         else:
             new_denormalized_values.append(None)
         new_current = new_current + timedelta(seconds=new_interval)
+    if not new_denormalized_values:
+        return None
     new_factor = new_max / 999.0
     new_normalized_values = []
     for value in new_denormalized_values:

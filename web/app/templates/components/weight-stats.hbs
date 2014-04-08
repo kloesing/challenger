@@ -2,25 +2,25 @@
     <div class="pure-u-1-3">
         <h3>Weights</h3>
         <p>mean advertised bandwidth fraction</p>
-        <strong>
+        <div class="color-indicator">
             <span class="d3-col block-0"></span>
-            {{to-percent advertisedBandwidthAvg 4}}
-        </strong>
+            <span class="label">{{to-percent advertisedBandwidthAvg 4}}</span>
+        </div>
         <p>mean consensus weight fraction</p>
-        <strong>
+        <div class="color-indicator">
             <span class="d3-col block-1"></span>
-            {{to-percent consensusWeightFractionAvg 4}}
-        </strong>
+            <span class="label">{{to-percent consensusWeightFractionAvg 4}}</span>
+        </div>
         <p>mean guard probability fraction</p>
-        <strong>
+        <div class="color-indicator">
             <span class="d3-col block-2"></span>
-            {{to-percent guardProbabilityAvg 4}}
-        </strong>
+            <span class="label">{{to-percent guardProbabilityAvg 4}}</span>
+        </div>
         <p>mean exit probability fraction</p>
-        <strong>
+        <div class="color-indicator">
             <span class="d3-col block-3"></span>
-            {{to-percent exitProbabilityAvg 4}}
-        </strong>
+            <span class="label">{{to-percent exitProbabilityAvg 4}}</span>
+        </div>
     </div>
     <div class="pure-u-2-3">
         {{ view 'combined-weight-graph'

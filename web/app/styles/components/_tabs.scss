@@ -1,0 +1,32 @@
+@import "../colors";
+
+
+.tabs{
+  $item-vertical-padding: 10px;
+
+  position: relative;
+  text-align: right;
+
+  .tab{
+    display: inline-block;
+    cursor: pointer;
+
+    p{
+      margin: 0;
+      text-align: left;
+      padding: $item-vertical-padding 15px;
+      font-weight: bold;
+      color: $black-light;
+    }
+
+    &:hover p{
+      color: $tor-purple;
+    }
+
+    &.active{
+      p{
+        color: $tor-purple;
+      }
+    }
+  }
+}

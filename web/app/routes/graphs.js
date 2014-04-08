@@ -8,27 +8,12 @@ export default Ember.Route.extend({
         return params.fp_query;
     },
     setupController: function (ctrl, query) {
-        if (query === 'all') {
-            // TODO: api all request
-            console.log('using all');
-            Em.RSVP.hash({
-                uptime: CombinedUptime.useAll(),
-                bandwidth: CombinedBandwidth.useAll(),
-                weights: CombinedWeights.useAll(),
-                clients: CombinedClients.useAll()
-            }).then(processResult);
-        } else {
-            var fingerprints = query.split('+');
-            console.log('using', fingerprints);
-            Em.RSVP.hash({
-                uptime: CombinedUptime.useFingerprints(fingerprints),
-                bandwidth: CombinedBandwidth.useFingerprints(fingerprints),
-                weights: CombinedWeights.useFingerprints(fingerprints),
-                clients: CombinedClients.useFingerprints(fingerprints)
-            }).then(processResult);
-        }
-
-        function processResult(result) {
+        Em.RSVP.hash({
+            uptime: CombinedUptime.useAll(),
+            bandwidth: CombinedBandwidth.useAll(),
+            weights: CombinedWeights.useAll(),
+            clients: CombinedClients.useAll()
+        }).then(function processResult(result){
             console.log('processing', result);
             ctrl.set('uptimeData', result.uptime.history);
             ctrl.set('uptimePeriods', result.uptime.periods);
@@ -41,6 +26,6 @@ export default Ember.Route.extend({
 
             ctrl.set('clientsData', result.clients.history);
             ctrl.set('clientsPeriods', result.clients.periods);
-        }
+        });
     }
 });

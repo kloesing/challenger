@@ -1,4 +1,6 @@
 export default Em.ObjectController.extend({
+    showParticipants: false,
+
     uptimeData: {},
     uptimePeriods: [],
 

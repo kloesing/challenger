@@ -2,10 +2,10 @@
     <div class="pure-u-1-3">
         <h3>Uptime</h3>
         <p>mean uptime</p>
-        <strong>
+        <div class="color-indicator">
             <span class="d3-col block-0"></span>
-            {{to-percent uptimeAvg}}
-        </strong>
+            <span class="label">{{to-percent uptimeAvg}}</span>
+        </div>
     </div>
     <div class="pure-u-2-3">
         {{ view 'combined-uptime-graph'

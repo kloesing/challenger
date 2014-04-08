@@ -1,5 +1,7 @@
+@import "./colors";
+
 .wrapper{
-  max-width: 1000px;
+//  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -8,4 +10,15 @@ body,input,select,
 .pure-g-r [class *= "pure-u"] {
   // set global font family
   font-family: "Open Sans" ,"lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, sans-serif;
+}
+
+body{
+  background-color: $white-dark;
+}
+
+a{
+  text-decoration: none;
+}
+.align-right{
+  text-align: right;
 }

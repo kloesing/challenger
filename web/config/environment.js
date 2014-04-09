@@ -8,7 +8,7 @@
 // window.ENV = {FEATURES: {'with-controller': true}};
 
 window.ENV = window.ENV || {
-    BASE_URL: 'http://localhost:8080/',
+    BASE_URL: 'http://192.168.178.52:8080/',
     PARTICIPANTS: [{
         fingerprint: 'F2044413DAC2E02E3D6BCF4735A19BCA1DE97281',
         name: 'gablemoo'

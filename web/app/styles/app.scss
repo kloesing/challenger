@@ -1,12 +1,15 @@
 @import "./vendor/pure-min";
 @import "./vendor/font-awesome/font-awesome";
 
-@import "./components/select-list";
 @import "./components/head";
 @import "./components/d3-colors";
 @import "./components/graph-stats";
 @import "./components/titlebar";
 @import "./components/tabs";
 @import "./components/color-indicator";
+@import "./components/fingerprint-item";
+@import "./components/participants";
 
 @import "./general";
+
+@import "./media-queries";

@@ -1,0 +1,75 @@
+@import "./colors";
+
+@media all and (max-width: 1390px) {
+  .wrapper{
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .graph-stats-container{
+    & > .pure-g > .pure-u-1-2{
+      width: 100%;
+    }
+  }
+}
+
+@media all and (max-width: 1000px) {
+  .wrapper{
+    width: 100%;
+  }
+  .graph-stats-container{
+    & > .pure-g > .pure-u-1-2{
+      width: 100%;
+    }
+  }
+}
+
+@media all and (max-width: 767px) {
+  .head{
+    h1{
+      border-right: 0;
+    }
+  }
+  .save-as-png{
+    left: auto !important;
+    right: 10px !important;
+    top: 10px !important;
+    bottom: auto !important;
+  }
+  .graph-canvas{
+    margin-top: 10px;
+  }
+  .titlebar{
+    margin-bottom: 10px;
+    .wrapper{
+      &:after,&:before{
+        display: none;
+      }
+    }
+    .pure-u-1-3, .pure-u-2-3{
+      width: 100%;
+    }
+    .pure-u-1-3{
+      display: none;
+    }
+    .tabs{
+      display: block;
+      text-align: center;
+    }
+  }
+  .graph-stats{
+    .meta{
+      p, .color-indicator{
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+  .fingerprint-list{
+    h4{
+      font-size: 12px;
+    }
+    .pure-u-1-3{
+      text-align: left;
+    }
+  }
+}

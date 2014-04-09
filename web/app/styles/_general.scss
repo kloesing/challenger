@@ -1,8 +1,12 @@
 @import "./colors";
 
 .wrapper{
-//  max-width: 1000px;
+  max-width: 1700px;
   margin: 0 auto;
+}
+.secondary{
+  color: $black-light;
+  font-weight: normal;
 }
 
 body,input,select,
@@ -17,7 +21,11 @@ body{
 }
 
 a{
+  color: $tor-purple;
   text-decoration: none;
+  &:hover{
+    color: $tor-purple-dark;
+  }
 }
 .align-right{
   text-align: right;

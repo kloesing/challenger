@@ -6,41 +6,40 @@
   $arrow-left: 20px;
 
   z-index: 9;
-  position: relative;
   background-color: $back-color;
   border-bottom: 1px solid $white-darker;
   margin-bottom: 20px;
 
-  &:before{
-    // arrow
-    position: absolute;
-    content: '';
-    bottom: -$item-horizontal-padding * 2;
-    left: $arrow-left;
-    width: 0;
-    height: 0;
-    border: 10px solid transparent;
-    border-top-color: $white-darker;
-  }
-  &:after{
-    // arrow shadow
-    position: absolute;
-    content: '';
-    bottom: -$item-horizontal-padding * 2 + 1;
-    left: $arrow-left;
-    width: 0;
-    height: 0;
-    border: 10px solid transparent;
-    border-top-color: $back-color;
-  }
+  .wrapper{
+    position: relative;
 
-  h2{
-    padding: $item-horizontal-padding 0;
+    &:before{
+      // arrow
+      position: absolute;
+      content: '';
+      bottom: -$item-horizontal-padding * 2;
+      left: $arrow-left;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: $white-darker;
+    }
+    &:after{
+      // arrow shadow
+      position: absolute;
+      content: '';
+      bottom: -$item-horizontal-padding * 2 + 1;
+      left: $arrow-left;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: $back-color;
+    }
   }
 
   h2{
     font-weight: normal;
-    padding-left: $item-horizontal-padding;
+    padding: $item-horizontal-padding 0 $item-horizontal-padding $item-horizontal-padding;
     margin: 0;
     font-size: 16px;
   }

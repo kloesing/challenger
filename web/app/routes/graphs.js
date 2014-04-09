@@ -26,6 +26,8 @@ export default Ember.Route.extend({
 
             ctrl.set('clientsData', result.clients.history);
             ctrl.set('clientsPeriods', result.clients.periods);
+
+            ctrl.updatePeriods(['weightData', 'bandwidthData', 'uptimeData', 'clientsData']);
         });
     }
 });

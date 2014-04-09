@@ -1,0 +1,58 @@
+@import "../colors";
+@import "../mixins";
+
+.head{
+  $item-vertical-padding: 10px;
+
+  position: relative;
+  z-index: 10;
+  background-color: $white;
+  border-bottom: 1px solid $white-darker;
+
+  .head-item{
+    display: inline-block;
+    padding: $item-vertical-padding;
+  }
+  h1, .nav{
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-size: 16px;
+    padding: 0;
+  }
+
+  h1{
+    font-weight: bolder;
+    padding: $item-vertical-padding;
+    padding-right: $item-vertical-padding * 2;
+    color: $black;
+    margin: 0;
+    border-right: 1px solid $white-darker;
+  }
+
+  .nav{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li{
+      display: inline-block;
+    }
+    a{
+      $border-width: 3px;
+      color: $black-light;
+      display: block;
+      padding: $item-vertical-padding 15px $item-vertical-padding - $border-width 15px;
+      border-bottom: $border-width solid transparent;
+      @include transition(color .2s, border-bottom-color .2s);
+
+      &:hover{
+        color: $tor-purple;
+      }
+      &.active{
+        color: $tor-purple;
+        border-bottom-color: $tor-purple;
+      }
+    }
+  }
+}

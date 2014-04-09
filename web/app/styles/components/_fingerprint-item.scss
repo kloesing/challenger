@@ -1,0 +1,27 @@
+@import "../colors";
+@import "../mixins";
+
+.fingerprint-list{
+  background-color: $white;
+  border-top: 1px solid $white-darker;
+  & > .pure-u-1-2:nth-child(2n) > .fingerprint-item{
+    border-right: 1px solid $white-darker;
+  }
+}
+.fingerprint-item{
+  padding: 10px;
+  border-left: 1px solid $white-darker;
+  border-bottom: 1px solid $white-darker;
+
+  h3, h4{
+    font-weight: normal;
+    font-size: 16px;
+    margin: 0;
+  }
+  a, span{
+    font-size: 14px;
+  }
+  a:hover{
+    text-decoration: underline;
+  }
+}

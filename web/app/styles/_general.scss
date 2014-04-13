@@ -1,0 +1,32 @@
+@import "./colors";
+
+.wrapper{
+  max-width: 1700px;
+  margin: 0 auto;
+}
+.secondary{
+  color: $black-light;
+  font-weight: normal;
+}
+
+body,input,select,
+.pure-g [class *= "pure-u"],
+.pure-g-r [class *= "pure-u"] {
+  // set global font family
+  font-family: "Open Sans" ,"lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, sans-serif;
+}
+
+body{
+  background-color: $white-dark;
+}
+
+a{
+  color: $tor-purple;
+  text-decoration: none;
+  &:hover{
+    color: $tor-purple-dark;
+  }
+}
+.align-right{
+  text-align: right;
+}

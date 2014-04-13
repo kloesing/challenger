@@ -1,0 +1,21 @@
+{
+  "name": "ember-app-kit",
+  "dependencies": {
+    "handlebars": "~1.1.2",
+    "jquery": "~1.9.1",
+    "qunit": "~1.12.0",
+    "ember-qunit": "https://github.com/rpflorence/ember-qunit.git#master",
+    "ember": "~1.4.0",
+    "ember-data": "~1.0.0-beta.7",
+    "ember-resolver": "git://github.com/stefanpenner/ember-jj-abrams-resolver.git#master",
+    "ic-ajax": "~0.3.0",
+    "ember-testing-httpRespond": "~0.1.1",
+    "loader.js": "git://github.com/stefanpenner/loader.js",
+    "moment": "~2.5.1",
+    "dygraph-combined": "http://dygraphs.com/1.0.1/dygraph-combined.js",
+    "dygraph-extra": "http://cavorite.com/labs/js/dygraphs-export/dygraph-extra.js"
+  },
+  "resolutions": {
+    "ember": "~1.4.0"
+  }
+}

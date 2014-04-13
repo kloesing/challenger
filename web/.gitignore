@@ -1,0 +1,22 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# add build files to git (indev?)
+#/dist
+
+# compiled output
+/tmp
+/docs
+
+# dependencies
+/node_modules
+/vendor/*
+!/vendor/ember-shim.js
+!/vendor/qunit-shim.js
+
+# misc
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+.DS_Store
+Thumbs.db
+/coverage/*

@@ -1,0 +1,46 @@
+@import "../colors";
+
+.titlebar{
+  $item-horizontal-padding: 10px;
+  $back-color: $white;
+  $arrow-left: 20px;
+
+  z-index: 9;
+  background-color: $back-color;
+  border-bottom: 1px solid $white-darker;
+  margin-bottom: 20px;
+
+  .wrapper{
+    position: relative;
+
+    &:before{
+      // arrow
+      position: absolute;
+      content: '';
+      bottom: -$item-horizontal-padding * 2;
+      left: $arrow-left;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: $white-darker;
+    }
+    &:after{
+      // arrow shadow
+      position: absolute;
+      content: '';
+      bottom: -$item-horizontal-padding * 2 + 1;
+      left: $arrow-left;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: $back-color;
+    }
+  }
+
+  h2{
+    font-weight: normal;
+    padding: $item-horizontal-padding 0 $item-horizontal-padding $item-horizontal-padding;
+    margin: 0;
+    font-size: 16px;
+  }
+}

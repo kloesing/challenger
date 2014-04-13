@@ -1,5 +1,6 @@
 *.json
 **/*.pyc
+.vagrant/*
 
 # webapp json
 !/web/*.json

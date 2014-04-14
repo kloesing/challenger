@@ -1,0 +1,40 @@
+{"relays_published":"2014-04-14 07:00:00",
+"relays":[
+{"nickname":"gabelmoo",
+"fingerprint":"F2044413DAC2E02E3D6BCF4735A19BCA1DE97281",
+"or_addresses":["212.112.245.170:443"],
+"dir_address":"212.112.245.170:80",
+"last_seen":"2014-04-14 07:00:00",
+"first_seen":"2010-01-19 15:00:00",
+"last_changed_address_or_port":"2010-12-16 11:00:00",
+"running":true,
+"flags":["Authority","HSDir","Named","Running","Stable","V2Dir","Valid"],
+"country":"de",
+"latitude":51.0000,
+"longitude":9.0000,
+"country_name":"Germany",
+"as_number":"AS24900",
+"as_name":"QSC AG",
+"consensus_weight":20,
+"advertised_bandwidth_fraction":0.000002557,
+"consensus_weight_fraction":0.000001463,
+"guard_probability":0.000000000,
+"middle_probability":0.000004388,
+"exit_probability":0.000000000,
+"exit_policy_summary":{"reject":["1-65535"]},
+"recommended_version":false,
+"last_restarted":"2014-04-07 23:10:20",
+"bandwidth_rate":20480,
+"bandwidth_burst":125829120,
+"observed_bandwidth":1326833,
+"advertised_bandwidth":20480,
+"exit_policy":[
+  "reject *:*"
+],
+"contact":"4096R\/C5AA446D Sebastian Hahn <tor@sebastianhahn.net>",
+"platform":"Tor 0.2.5.3-alpha-dev on Linux"
+}
+],
+"bridges_published":"2014-04-14 06:37:06",
+"bridges":[
+]}

@@ -1,5 +1,9 @@
 # Put relay fingerprints and hashed bridge fingerprint below
 
+# Relays
 F2044413DAC2E02E3D6BCF4735A19BCA1DE97281 # gabelmoo
 9695DFC35FFEB861329B9F1AB04C46397020CE31 # moria1
+
+# Bridges
+DE6397A047ABE5F78B4C87AF725047831B221AAB # ndnop2
 

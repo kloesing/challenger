@@ -10,14 +10,16 @@ from lib.onion import download_documents
 def main():
     options = parse_options()
     fingerprints = read_fingerprints(options.in_fingerprints)
-    download_and_combine_documents(options.out_bandwidth, 'bandwidth',
-                                   fingerprints)
-    download_and_combine_documents(options.out_weights, 'weights',
-                                   fingerprints)
-    download_and_combine_documents(options.out_clients, 'clients',
-                                   fingerprints)
-    download_and_combine_documents(options.out_uptime, 'uptime',
-                                   fingerprints)
+    details_documents = fetch_documents('details', fingerprints)
+    write_fingerprints(options.out_fingerprints, details_documents)
+    bandwidth_documents = fetch_documents('bandwidth', fingerprints)
+    combine_and_write_documents(options.out_bandwidth, bandwidth_documents)
+    weights_documents = fetch_documents('weights', fingerprints)
+    combine_and_write_documents(options.out_weights, weights_documents)
+    clients_documents = fetch_documents('clients', fingerprints)
+    combine_and_write_documents(options.out_clients, clients_documents)
+    uptime_documents = fetch_documents('uptime', fingerprints)
+    combine_and_write_documents(options.out_uptime, uptime_documents)
 
 def parse_options():
     parser = optparse.OptionParser()
@@ -40,6 +42,10 @@ def parse_options():
     parser.add_option('-c', action='store', dest='out_clients',
                       default='combined-clients.json', metavar='FILE',
                       help='write combined clients document as output '
+                           '[default: %default]')
+    parser.add_option('-p', action='store', dest='out_fingerprints',
+                      default='fingerprints.json', metavar='FILE',
+                      help='write fingerprints document as output '
                            '[default: %default]')
     (options, args) = parser.parse_args()
     return options
@@ -64,12 +70,10 @@ def read_fingerprints(fingerprints_path):
             print('Skipping invalid fingerprint: %s' % (stripped_line, ))
     return fingerprints
 
-def download_and_combine_documents(out_path, resource_name, fingerprints):
+def fetch_documents(resource_name, fingerprints):
     # TODO put me in after testing
-    #downloads = download_documents(resource_name, fingerprints)
-    downloads = read_documents_from_disk(resource_name, fingerprints)
-    combined_document = combine_downloads(downloads)
-    write_combined_document_to_disk(out_path, combined_document)
+    #return download_documents(resource_name, fingerprints)
+    return read_documents_from_disk(resource_name, fingerprints)
 
 def read_documents_from_disk(resource_name, fingerprints):
     # TODO Take me out after testing
@@ -82,6 +86,10 @@ def read_documents_from_disk(resource_name, fingerprints):
             document_file.close()
             downloads.append(json.loads(document_content))
     return downloads
+
+def combine_and_write_documents(out_path, downloads):
+    combined_document = combine_downloads(downloads)
+    write_combined_document_to_disk(out_path, combined_document)
 
 def combine_downloads(downloads):
     """
@@ -208,6 +216,29 @@ def combine_histories(time_period, histories):
 def write_combined_document_to_disk(out_path, combined_document):
     out_file = open(out_path, 'w')
     out_file.write(json.dumps(combined_document))
+    out_file.close()
+
+def write_fingerprints(out_path, details_documents):
+    documents = []
+    for details in details_documents:
+        documents.extend(details['relays'])
+        documents.extend(details['bridges'])
+    new_nodes = []
+    for details in documents:
+        new_node = {}
+        if 'fingerprint' in details:
+            new_node['fingerprint'] = details['fingerprint']
+        elif 'hashed_fingerprint' in details:
+            new_node['fingerprint'] = details['hashed_fingerprint']
+        else:
+            continue
+        if 'nickname' in details:
+            new_node['nickname'] = details['nickname']
+        else:
+            new_node['nickname'] = 'Unnamed'
+        new_nodes.append(new_node)
+    out_file = open(out_path, 'w')
+    out_file.write(json.dumps(new_nodes))
     out_file.close()
 
 if __name__ == '__main__':

@@ -1,0 +1,43 @@
+{"relays_published":"2014-04-14 07:00:00",
+"relays":[
+{"nickname":"moria1",
+"fingerprint":"9695DFC35FFEB861329B9F1AB04C46397020CE31",
+"or_addresses":["128.31.0.34:9101"],
+"dir_address":"128.31.0.34:9131",
+"last_seen":"2014-04-14 07:00:00",
+"first_seen":"2010-01-18 23:00:00",
+"last_changed_address_or_port":"2010-01-18 23:00:00",
+"running":true,
+"flags":["Authority","Fast","Guard","HSDir","Named","Running","Stable","V2Dir","Valid"],
+"country":"us",
+"latitude":42.3646,
+"longitude":-71.1028,
+"country_name":"United States",
+"region_name":"Massachusetts",
+"city_name":"Cambridge",
+"as_number":"AS3",
+"as_name":"Massachusetts Institute of Technology",
+"consensus_weight":20,
+"host_name":"moria.csail.mit.edu",
+"advertised_bandwidth_fraction":0.000063937,
+"consensus_weight_fraction":0.000001463,
+"guard_probability":0.000002839,
+"middle_probability":0.000001550,
+"exit_probability":0.000000000,
+"exit_policy_summary":{"reject":["1-65535"]},
+"recommended_version":false,
+"last_restarted":"2014-03-27 04:15:20",
+"bandwidth_rate":512000,
+"bandwidth_burst":62914560,
+"observed_bandwidth":1366583,
+"advertised_bandwidth":512000,
+"exit_policy":[
+  "reject *:*"
+],
+"contact":"1024D\/28988BF5 arma mit edu",
+"platform":"Tor 0.2.5.3-alpha-dev on Linux"
+}
+],
+"bridges_published":"2014-04-14 06:37:06",
+"bridges":[
+]}

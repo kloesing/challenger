@@ -1,0 +1,18 @@
+{"relays_published":"2014-04-14 07:00:00",
+"relays":[
+],
+"bridges_published":"2014-04-14 06:37:06",
+"bridges":[
+{"nickname":"ndnop2",
+"hashed_fingerprint":"DE6397A047ABE5F78B4C87AF725047831B221AAB",
+"or_addresses":["10.156.79.231:29001"],
+"last_seen":"2014-04-09 05:07:04",
+"first_seen":"2013-05-14 00:07:04",
+"running":false,
+"flags":["Valid"],
+"last_restarted":"2014-02-20 15:49:04",
+"advertised_bandwidth":2227019,
+"platform":"Tor 0.2.5.2-alpha on Linux",
+"pool_assignment":"email ip=4 flag=stable transport=obfs3,obfs2"
+}
+]}

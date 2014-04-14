@@ -26,31 +26,31 @@
         <div class="pure-g">
             <div class="pure-u-1-2">
                 {{uptime-stats
-                    data=controller.uptimeData
-                    timePeriods=controller.uptimePeriods
+                    data=uptimeData
+                    timePeriods=uptimePeriods
                     period=selectedPeriod
                 }}
 
             </div>
             <div class="pure-u-1-2">
                 {{bandwidth-stats
-                    data=controller.bandwidthData
-                    timePeriods=controller.bandwidthPeriods
+                    data=bandwidthData
+                    timePeriods=bandwidthPeriods
                     period=selectedPeriod
                 }}
 
             </div>
             <div class="pure-u-1-2">
                 {{weight-stats
-                    data=controller.weightData
-                    timePeriods=controller.weightPeriods
+                    data=weightData
+                    timePeriods=weightPeriods
                     period=selectedPeriod
                 }}
             </div>
             <div class="pure-u-1-2">
                 {{clients-stats
-                    data=controller.clientsData
-                    timePeriods=controller.clientsPeriods
+                    data=clientsData
+                    timePeriods=clientsPeriods
                     period=selectedPeriod
                 }}
             </div>
@@ -61,12 +61,19 @@
 <div class="wrapper">
     <div class="participants">
         <div class="content-head">
-            <h2>Participants</h2>
+            <h2 class="pointer" {{action 'toggleShowParticipants'}}>
+                {{controllers.application.participants.length}} Participants
+                <span>
+                    <i {{bind-attr class=':fa showParticipants:fa-angle-up:fa-angle-down'}}></i>
+                </span>
+            </h2>
         </div>
-        {{collection
-            itemView='fingerprint-item'
-            content=ENV.PARTICIPANTS
-            classNames='pure-g-r fingerprint-list'
-        }}
+        {{#if showParticipants}}
+            {{collection
+                itemView='fingerprint-item'
+                content=controllers.application.participants
+                classNames='pure-g-r fingerprint-list'
+            }}
+        {{/if}}
     </div>
 </div>

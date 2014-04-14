@@ -4,4 +4,4 @@ export default GraphStats.extend({
     avgFields: [
         'uptime'
     ]
-})
+});

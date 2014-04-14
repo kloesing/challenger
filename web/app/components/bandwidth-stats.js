@@ -5,4 +5,4 @@ export default GraphStats.extend({
         'writeHistory',
         'readHistory'
     ]
-})
+});

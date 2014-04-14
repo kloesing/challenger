@@ -1,11 +1,12 @@
-/*global $, Dygraph, GLOBE, Em */
+import Util from 'appkit/utils/globe-util';
+
+/*global $, Dygraph, Em, moment */
 export default Em.View.extend({
     title: 'GraphView',
     templateName: 'graph-item',
     timePeriod: '1_week',
     timePeriods: ['1_week'],
     legendPos: [],
-    dateWindow: null,
     width: 0,
     height: 0,
     graphOpts: {},
@@ -25,8 +26,6 @@ export default Em.View.extend({
     },
 
     plot: function(){
-
-        var dateWindow = this.get('dateWindow');
         var graphOpts = this.get('graphOpts');
         var selector = this.$()[0].id;
         var $graphCanvas = $('#' + selector).find('.graph-canvas');
@@ -37,6 +36,10 @@ export default Em.View.extend({
         var dygraph;
 
         var histories = [];
+
+        if (!data) {
+            return;
+        }
 
         // dimension calculation
         var storedWidth = this.get('width');
@@ -126,9 +129,7 @@ export default Em.View.extend({
             $graphCanvas.html('');
         }
 
-        if (dateWindow && period && dateWindow[period]){
-            graphOpts.dateWindow = [dateWindow[period].first, dateWindow[period].last];
-        }
+        graphOpts.dateWindow = [Util.nowMinusPeriod(period).valueOf(), moment().valueOf()];
 
         dygraph = new Dygraph($graphCanvas[0],
             dataset,

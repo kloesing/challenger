@@ -2,33 +2,18 @@
 
 > Scaffolding based on [Ember App Kit](http://iamstef.net/ember-app-kit/).
 
-##Setup
+##Deploying the application
 
-Right now (`dev`) the application needs an application and api server.
-The application server hosts required css, js and html.
-The api server provides json files.
+- Copy the generated json files to the `web/dist/assets/json/` directory.
+- Copy the `web/dist` directory to your server and open a browser and visit the `index.html`.
+- (If you don't plan, on placing the application on the server root, change `index.html` and replace absolute paths with relative paths)
 
-###Dev
+###Developing and building the application
 
-####Api server
+If you want to change something or build everything yourself, you need to follow these steps:
 
-(The api server is a simple SimpleHTTPServer with Access-Control-Allow-Origin set)
-
-Run in the project root:
-
-```
-python2 server-json-provider.py 8080
-```
-
-####App server
-
-The app server doesn't care where it's executed. Use a static file hoster and change `dist/assets/*.config.min.js` to point to the api server:
-
-```
-window.ENV=window.ENV||{BASE_URL:"http://localhost:8080/"};
-```
-
-If you want to help change something, run:
-
-1. `npm install` in the web directory to load all node and bower dependencies.
-2. `grunt server` to start an dev server (on port 8000) that watches for changes, reloads the browser and recompiles everytime
+1. clone the repository
+2. cd to `web/`
+3. run `npm install` (wait until it's finished downloading dependencies)
+4a. run `grunt server` to start a development server
+4b. run `grunt dist` to build the project (the result is located in `web/dist/`

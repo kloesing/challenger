@@ -1,6 +1,8 @@
 import PeriodsMixin from 'appkit/mixins/periods-mixin';
 
 export default Em.ObjectController.extend(PeriodsMixin, {
+    needs: ['application'],
+
     showParticipants: false,
 
     uptimeData: {},
@@ -13,5 +15,11 @@ export default Em.ObjectController.extend(PeriodsMixin, {
     weightPeriods: [],
 
     clientsData: {},
-    clientsPeriods: []
+    clientsPeriods: [],
+
+    actions: {
+        toggleShowParticipants: function(){
+            this.toggleProperty('showParticipants');
+        }
+    }
 });

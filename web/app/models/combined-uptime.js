@@ -1,18 +1,12 @@
-import ajax from 'appkit/utils/ajax';
+import json from 'appkit/utils/json';
 import Util from 'appkit/utils/globe-util';
 
 function useAll(){
-    return new Em.RSVP.Promise(function(resolve, reject){
-        var url = ENV.BASE_URL + 'combined-uptime/all';
-        // TODO: replace with api call
-        url = ENV.BASE_URL + 'combined-uptime.json';
-        ajax({
-            dataType: 'json',
-            url: url
-        }).then(function(result){
-            resolve(Util.processHistoryResponse({
+    return new Em.RSVP.Promise(function(resolve){
+        json('combined-uptime.json').then(function(result){
+            resolve(Util.compute3DaysHistory(Util.processHistoryResponse({
                 uptime: 'uptime'
-            }, result));
+            }, result)));
         });
     });
 }

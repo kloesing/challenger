@@ -7,6 +7,8 @@
   margin: 0 0 0 10px;
 }
 .graph-stats{
+  // fix for dygraph handles being outside the div
+  overflow: hidden;
   position: relative;
   display: block;
   @include border-box();
@@ -37,5 +39,13 @@
     &:hover{
       color: $tor-purple;
     }
+  }
+}
+.graph-canvas{
+  .missing-data{
+    background-color: transparent;
+    text-align: center;
+    height: 250px;
+    line-height: 250px;
   }
 }

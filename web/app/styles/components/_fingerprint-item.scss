@@ -2,13 +2,16 @@
 @import "../mixins";
 
 .fingerprint-list{
-  background-color: $white;
   border-top: 1px solid $white-darker;
   & > .pure-u-1-2:nth-child(2n) > .fingerprint-item{
     border-right: 1px solid $white-darker;
   }
+  & > .pure-u-1-2:last-child{
+    border-right: 1px solid $white-darker;
+  }
 }
 .fingerprint-item{
+  background-color: $white;
   padding: 10px;
   border-left: 1px solid $white-darker;
   border-bottom: 1px solid $white-darker;

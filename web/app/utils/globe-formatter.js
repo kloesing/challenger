@@ -1,4 +1,3 @@
-/*global GLOBE */
 var Formatter = {
     percent: function(val, precision) {
         var fixed = 'n/a';

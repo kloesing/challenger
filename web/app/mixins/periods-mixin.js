@@ -1,4 +1,4 @@
-/*global $, GLOBE, Em */
+/*global $, Em, App */
 export default Em.Mixin.create({
     selectedPeriod: '1_week',
     periods: [],

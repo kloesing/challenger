@@ -16,4 +16,4 @@ export default Em.Component.extend({
     avgShouldChange: function(){
         this.setProperties(this.getAvgs(this.get('avgFields')));
     }.observes('period', 'timePeriods')
-})
+});

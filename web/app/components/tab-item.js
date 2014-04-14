@@ -1,4 +1,4 @@
-/*global GLOBE, Em */
+/*global Em */
 export default Em.Component.extend({
     active: false,
     tagName: 'div',

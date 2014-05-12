@@ -77,8 +77,8 @@ def read_fingerprints(fingerprints_path):
 
 def fetch_documents(resource_name, fingerprints):
     # TODO put me in after testing
-    #return download_documents(resource_name, fingerprints)
-    return read_documents_from_disk(resource_name, fingerprints)
+    return download_documents(resource_name, fingerprints)
+    #return read_documents_from_disk(resource_name, fingerprints)
 
 def read_documents_from_disk(resource_name, fingerprints):
     # TODO Take me out after testing

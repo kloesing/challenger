@@ -21,6 +21,6 @@ def query(resource, params):
 def download_documents(resource_name, fingerprints):
   downloads = []
   for fingerprint in fingerprints:
-    doc = query(resource_name, {'lookup':fingerprint})
+    doc = query(resource_name, {'fingerprint':fingerprint})
     downloads.append(doc)
   return downloads

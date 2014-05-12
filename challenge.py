@@ -14,6 +14,7 @@ def main():
     write_fingerprints(options.out_fingerprints, details_documents)
     bandwidth_documents = fetch_documents('bandwidth', fingerprints)
     combine_and_write_documents(options.out_bandwidth, bandwidth_documents)
+    sum_up_written_bytes(options.out_bytes, bandwidth_documents)
     weights_documents = fetch_documents('weights', fingerprints)
     combine_and_write_documents(options.out_weights, weights_documents)
     clients_documents = fetch_documents('clients', fingerprints)
@@ -27,6 +28,10 @@ def parse_options():
                       default='fingerprints.txt', metavar='FILE',
                       help='read relay fingerprints and/or hashed bridge '
                            'fingerprint as input [default: %default]')
+    parser.add_option('-t', action='store', dest='out_bytes',
+                      default='transferred-bytes.json', metavar='FILE',
+                      help='write transferred bytes document as output '
+                           '[default: %default]')
     parser.add_option('-b', action='store', dest='out_bandwidth',
                       default='combined-bandwidth.json', metavar='FILE',
                       help='write combined bandwidth document as output '
@@ -239,6 +244,34 @@ def write_fingerprints(out_path, details_documents):
         new_nodes.append(new_node)
     out_file = open(out_path, 'w')
     out_file.write(json.dumps(new_nodes))
+    out_file.close()
+
+def sum_up_written_bytes(out_path, bandwidth_documents):
+    write_histories = []
+    for document in bandwidth_documents:
+        for relay in document['relays']:
+            if 'write_history' in relay:
+                write_histories.append(relay['write_history'])
+        for bridge in document['bridges']:
+            if 'write_history' in bridge:
+                write_histories.append(bridge['write_history'])
+    total_written_bytes = 0
+    for write_history in write_histories:
+        max_written_bytes_relay = 0
+        for key, value in write_history.iteritems():
+            if 'interval' in value and 'values' in value and \
+                 'factor' in value:
+                total = 0
+                for val in value['values']:
+                    if val: total = total + val
+                total = int(total * value['interval'] * value['factor'])
+                if total > max_written_bytes_relay:
+                    max_written_bytes_relay = total
+        total_written_bytes += max_written_bytes_relay
+    document = {}
+    document['total_written_bytes'] = total_written_bytes
+    out_file = open(out_path, 'w')
+    out_file.write(json.dumps(document))
     out_file.close()
 
 if __name__ == '__main__':

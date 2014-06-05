@@ -14,7 +14,8 @@ def main():
     write_fingerprints(options.out_fingerprints, details_documents)
     bandwidth_documents = fetch_documents('bandwidth', fingerprints)
     combine_and_write_documents(options.out_bandwidth, bandwidth_documents)
-    sum_up_written_bytes(options.out_bytes, bandwidth_documents)
+    sum_up_written_bytes(options.out_bytes, bandwidth_documents,
+                         options.cutoff_datetime)
     weights_documents = fetch_documents('weights', fingerprints)
     combine_and_write_documents(options.out_weights, weights_documents)
     clients_documents = fetch_documents('clients', fingerprints)
@@ -32,6 +33,12 @@ def parse_options():
                       default='transferred-bytes.json', metavar='FILE',
                       help='write transferred bytes document as output '
                            '[default: %default]')
+    parser.add_option('-s', action='store', dest='cutoff_datetime',
+                      default='2014-06-05 00:00:00', metavar='DATETIME',
+                      help='date-time when the challenge starts, only '
+                           'relevant for transferred bytes document '
+                           '[default: %default, '
+                           'format: \%Y-\%m-\%d \%H:\%M:\%S]')
     parser.add_option('-b', action='store', dest='out_bandwidth',
                       default='combined-bandwidth.json', metavar='FILE',
                       help='write combined bandwidth document as output '
@@ -246,7 +253,10 @@ def write_fingerprints(out_path, details_documents):
     out_file.write(json.dumps(new_nodes))
     out_file.close()
 
-def sum_up_written_bytes(out_path, bandwidth_documents):
+def sum_up_written_bytes(out_path, bandwidth_documents,
+                         cutoff_datetime=None):
+    if cutoff_datetime:
+        cutoff = datetime.strptime(cutoff_datetime, '%Y-%m-%d %H:%M:%S')
     write_histories = []
     for document in bandwidth_documents:
         for relay in document['relays']:
@@ -259,11 +269,16 @@ def sum_up_written_bytes(out_path, bandwidth_documents):
     for write_history in write_histories:
         max_written_bytes_relay = 0
         for key, value in write_history.iteritems():
-            if 'interval' in value and 'values' in value and \
-                 'factor' in value:
+            if 'interval' in value and 'first' in value and \
+                 'values' in value and 'factor' in value:
                 total = 0
+                current = datetime.strptime(value['first'],
+                                            '%Y-%m-%d %H:%M:%S')
+                interval = timedelta(seconds=value['interval'])
                 for val in value['values']:
-                    if val: total = total + val
+                    if val and (not cutoff or current >= cutoff):
+                        total = total + val
+                    current = current + interval
                 total = int(total * value['interval'] * value['factor'])
                 if total > max_written_bytes_relay:
                     max_written_bytes_relay = total

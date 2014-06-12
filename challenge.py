@@ -10,17 +10,22 @@ from lib.onion import download_documents
 def main():
     options = parse_options()
     fingerprints = read_fingerprints(options.in_fingerprints)
-    details_documents = fetch_documents('details', fingerprints)
+    details_documents = fetch_documents('details', fingerprints,
+                                        options.base_url)
     write_fingerprints(options.out_fingerprints, details_documents)
-    bandwidth_documents = fetch_documents('bandwidth', fingerprints)
+    bandwidth_documents = fetch_documents('bandwidth', fingerprints,
+                                          options.base_url)
     combine_and_write_documents(options.out_bandwidth, bandwidth_documents)
     sum_up_written_bytes(options.out_bytes, bandwidth_documents,
                          options.cutoff_datetime)
-    weights_documents = fetch_documents('weights', fingerprints)
+    weights_documents = fetch_documents('weights', fingerprints,
+                                        options.base_url)
     combine_and_write_documents(options.out_weights, weights_documents)
-    clients_documents = fetch_documents('clients', fingerprints)
+    clients_documents = fetch_documents('clients', fingerprints,
+                                        options.base_url)
     combine_and_write_documents(options.out_clients, clients_documents)
-    uptime_documents = fetch_documents('uptime', fingerprints)
+    uptime_documents = fetch_documents('uptime', fingerprints,
+                                       options.base_url)
     combine_and_write_documents(options.out_uptime, uptime_documents)
 
 def parse_options():
@@ -59,6 +64,11 @@ def parse_options():
                       default='fingerprints.json', metavar='FILE',
                       help='write fingerprints document as output '
                            '[default: %default]')
+    parser.add_option('-o', action='store', dest='base_url',
+                      default='https://onionoo.torproject.org/',
+                      metavar='URL',
+                      help='download from this Onionoo instance '
+                           '[default: %default]')
     (options, args) = parser.parse_args()
     return options
 
@@ -82,9 +92,9 @@ def read_fingerprints(fingerprints_path):
             print('Skipping invalid fingerprint: %s' % (stripped_line, ))
     return fingerprints
 
-def fetch_documents(resource_name, fingerprints):
+def fetch_documents(resource_name, fingerprints, base_url):
     # TODO put me in after testing
-    return download_documents(resource_name, fingerprints)
+    return download_documents(resource_name, fingerprints, base_url)
     #return read_documents_from_disk(resource_name, fingerprints)
 
 def read_documents_from_disk(resource_name, fingerprints):

@@ -4,12 +4,12 @@ import json
 class OnionooError(Exception):
   pass
 
-def query(resource, params):
+def query(resource, params, base_url):
   if not resource in ['summary', 'details', 'bandwidth', 'weights',
                       'clients', 'uptime']:
     raise OnionooError('Invalid query (Unknown document)')
 
-  url = 'https://onionoo.torproject.org/%s' % (resource,)
+  url = '%s%s' % (base_url, resource,)
 
   r = requests.get(url, params=params)
   if r.status_code == 200:
@@ -18,9 +18,10 @@ def query(resource, params):
     raise OnionooError('Onionoo replied with error: %s (%s)' % (
                        r.status_code, r.reason))
 
-def download_documents(resource_name, fingerprints):
+def download_documents(resource_name, fingerprints,
+                       base_url = 'https://onionoo.torproject.org/'):
   downloads = []
   for fingerprint in fingerprints:
-    doc = query(resource_name, {'fingerprint':fingerprint})
+    doc = query(resource_name, {'fingerprint':fingerprint}, base_url)
     downloads.append(doc)
   return downloads

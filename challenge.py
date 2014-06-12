@@ -10,6 +10,12 @@ from lib.onion import download_documents
 def main():
     options = parse_options()
     fingerprints = read_fingerprints(options.in_fingerprints)
+    weights_documents = fetch_documents('weights', fingerprints,
+                                        options.base_url)
+    fingerprints, weights_documents = retain_only_new_or_faster(
+                                      fingerprints, weights_documents,
+                                      options.cutoff_datetime,
+                                      options.min_raise)
     details_documents = fetch_documents('details', fingerprints,
                                         options.base_url)
     write_fingerprints(options.out_fingerprints, details_documents)
@@ -18,8 +24,6 @@ def main():
     combine_and_write_documents(options.out_bandwidth, bandwidth_documents)
     sum_up_written_bytes(options.out_bytes, bandwidth_documents,
                          options.cutoff_datetime)
-    weights_documents = fetch_documents('weights', fingerprints,
-                                        options.base_url)
     combine_and_write_documents(options.out_weights, weights_documents)
     clients_documents = fetch_documents('clients', fingerprints,
                                         options.base_url)
@@ -69,6 +73,12 @@ def parse_options():
                       metavar='URL',
                       help='download from this Onionoo instance '
                            '[default: %default]')
+    parser.add_option('-m', action='store', dest='min_raise',
+                      default='128000', metavar='BW',
+                      help='minimum increase in advertised bandwidth in '
+                           'B/s that existing relays must have to be '
+                           'considered in the challenge [default: '
+                           '%default]')
     (options, args) = parser.parse_args()
     return options
 
@@ -298,6 +308,47 @@ def sum_up_written_bytes(out_path, bandwidth_documents,
     out_file = open(out_path, 'w')
     out_file.write(json.dumps(document))
     out_file.close()
+
+def retain_only_new_or_faster(fingerprints, weights_documents,
+                              start_datetime, min_raise_str):
+    result_fingerprints = list(fingerprints)
+    result_weights_documents = []
+    start = datetime.strptime(start_datetime, '%Y-%m-%d %H:%M:%S')
+    min_raise = int(min_raise_str)
+    for weights_document in weights_documents:
+        retain = True
+        if 'relays' in weights_document:
+            for relay in weights_document['relays']:
+                if 'fingerprint' in relay and \
+                   'advertised_bandwidth' in relay:
+                    fingerprint = relay['fingerprint']
+                    advbw = relay['advertised_bandwidth']
+                    max_before, max_after = -1, -1
+                    for advbw in relay['advertised_bandwidth'].values():
+                        if 'interval' in advbw and 'first' in advbw and \
+                           'values' in advbw and 'factor' in advbw:
+                            current = datetime.strptime(advbw['first'],
+                                      '%Y-%m-%d %H:%M:%S')
+                            interval = timedelta(
+                                       seconds=advbw['interval'])
+                            factor = advbw['factor']
+                            for val in advbw['values']:
+                                if val:
+                                    value = val * factor
+                                    if current < start and \
+                                       value > max_before:
+                                        max_before = value
+                                    elif current >= start and \
+                                         value > max_after:
+                                        max_after = value
+                                current = current + interval
+                    if max_before > -1 and \
+                       max_after - min_raise < max_before:
+                        result_fingerprints.remove(fingerprint)
+                        retain = False
+        if retain:
+            result_weights_documents.append(weights_document)
+    return result_fingerprints, result_weights_documents
 
 if __name__ == '__main__':
     main()

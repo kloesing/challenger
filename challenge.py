@@ -21,16 +21,24 @@ def main():
     write_fingerprints(options.out_fingerprints, details_documents)
     bandwidth_documents = fetch_documents('bandwidth', fingerprints,
                                           options.base_url)
-    combine_and_write_documents(options.out_bandwidth, bandwidth_documents)
+    remove_csv_file(options.out_csv)
+    combine_and_write_documents(options.out_bandwidth, options.out_csv,
+                                bandwidth_documents,
+                                options.addonly_datetime)
     sum_up_written_bytes(options.out_bytes, bandwidth_documents,
                          options.cutoff_datetime)
-    combine_and_write_documents(options.out_weights, weights_documents)
+    combine_and_write_documents(options.out_weights, options.out_csv,
+                                weights_documents,
+                                options.addonly_datetime)
     clients_documents = fetch_documents('clients', fingerprints,
                                         options.base_url)
-    combine_and_write_documents(options.out_clients, clients_documents)
+    combine_and_write_documents(options.out_clients, options.out_csv,
+                                clients_documents,
+                                options.addonly_datetime)
     uptime_documents = fetch_documents('uptime', fingerprints,
                                        options.base_url)
-    combine_and_write_documents(options.out_uptime, uptime_documents)
+    combine_and_write_documents(options.out_uptime, options.out_csv,
+                                uptime_documents, None)
 
 def parse_options():
     parser = optparse.OptionParser()
@@ -47,6 +55,14 @@ def parse_options():
                       help='date-time when the challenge starts, only '
                            'relevant for transferred bytes document '
                            '[default: %default, '
+                           'format: \%Y-\%m-\%d \%H:\%M:\%S]')
+    parser.add_option('-a', action='store', dest='addonly_datetime',
+                      default=None, metavar='DATETIME',
+                      help='if set, only include bandwidth, weights, and '
+                           'clients values in combined document files '
+                           'starting at this date time, and after '
+                           'subtracting maximum values from before this '
+                           'date time ' '[default: %default, '
                            'format: \%Y-\%m-\%d \%H:\%M:\%S]')
     parser.add_option('-b', action='store', dest='out_bandwidth',
                       default='combined-bandwidth.json', metavar='FILE',
@@ -78,6 +94,11 @@ def parse_options():
                       help='minimum increase in advertised bandwidth in '
                            'B/s that existing relays must have to be '
                            'considered in the challenge [default: '
+                           '%default]')
+    parser.add_option('-v', action='store', dest='out_csv',
+                      default='combined.csv', metavar='FILE',
+                      help='write combined document contents as '
+                           'comma-separated value file [default: '
                            '%default]')
     (options, args) = parser.parse_args()
     return options
@@ -119,11 +140,20 @@ def read_documents_from_disk(resource_name, fingerprints):
             downloads.append(json.loads(document_content))
     return downloads
 
-def combine_and_write_documents(out_path, downloads):
-    combined_document = combine_downloads(downloads)
-    write_combined_document_to_disk(out_path, combined_document)
+def remove_csv_file(out_csv_path):
+    if os.path.exists(out_csv_path):
+        os.remove(out_csv_path)
 
-def combine_downloads(downloads):
+def combine_and_write_documents(out_json_path, out_csv_path, downloads,
+                                addonly_datetime):
+    addonly = None
+    if addonly_datetime:
+        addonly = datetime.strptime(addonly_datetime, '%Y-%m-%d %H:%M:%S')
+    combined_document = combine_downloads(downloads, addonly)
+    write_combined_document_to_disk(out_json_path, out_csv_path,
+                                    combined_document)
+
+def combine_downloads(downloads, addonly):
     """
     Combine an arbitrary number of downloaded Onionoo documents consisting
     of four fields:
@@ -138,9 +168,9 @@ def combine_downloads(downloads):
     for download_dict in downloads:
         documents.extend(download_dict['relays'])
         documents.extend(download_dict['bridges'])
-    return combine_documents(documents)
+    return combine_documents(documents, addonly)
 
-def combine_documents(documents):
+def combine_documents(documents, addonly):
     """
     Combine one or more relay or bridge documents into a single document
     with the following fields:
@@ -160,10 +190,10 @@ def combine_documents(documents):
     combined_document = {}
     combined_document['fingerprints'] = fingerprints
     for key, value in graphs.iteritems():
-        combined_document[key] = combine_graphs(value)
+        combined_document[key] = combine_graphs(value, addonly)
     return combined_document
 
-def combine_graphs(graphs):
+def combine_graphs(graphs, addonly):
     """
     Combine one or more sets of graphs into a single set of graphs.
     """
@@ -176,7 +206,7 @@ def combine_graphs(graphs):
                 histories[key] = [value]
     combined_graph = {}
     for key, value in histories.iteritems():
-        combined_history = combine_histories(key, value)
+        combined_history = combine_histories(key, value, addonly)
         if combined_history:
             combined_graph[key] = combined_history
     return combined_graph
@@ -184,7 +214,7 @@ def combine_graphs(graphs):
 time_periods = {'3_days':3, '1_week':7, '1_month':31, '3_months':92,
                 '1_year':366, '5_years':1830}
 
-def combine_histories(time_period, histories):
+def combine_histories(time_period, histories, addonly):
     """
     Combine an arbitrary number of graphs for a given time period into a
     single graph.  The combined graph will range from max(first) to
@@ -198,13 +228,24 @@ def combine_histories(time_period, histories):
         interval.append(history['interval'])
         factor = history['factor']
         current = datetime.strptime(history['first'], '%Y-%m-%d %H:%M:%S')
+        max_before = 0
         for value in history['values']:
             if value:
                 denormalized_value = value * history['factor']
-                if current in values:
-                    values[current].append(denormalized_value)
-                else:
-                    values[current] = [denormalized_value]
+                if addonly:
+                    if current < addonly:
+                        if denormalized_value > max_before:
+                            max_before = denormalized_value
+                        denormalized_value = None
+                    elif denormalized_value < max_before:
+                        denormalized_value = None
+                    else:
+                        denormalized_value -= max_before
+                if denormalized_value:
+                    if current in values:
+                        values[current].append(denormalized_value)
+                    else:
+                        values[current] = [denormalized_value]
             current = current + timedelta(seconds=history['interval'])
     new_first, new_last = None, None
     new_interval = max(interval)
@@ -237,17 +278,41 @@ def combine_histories(time_period, histories):
         else:
             new_normalized_values.append(None)
     combined_history = {}
-    combined_history['first'] = max(first)
-    combined_history['last'] = max(last)
+    combined_history['first'] = str(new_first)
+    combined_history['last'] = str(new_last)
     combined_history['interval'] = new_interval
     combined_history['factor'] = new_factor
     combined_history['count'] = len(new_normalized_values)
     combined_history['values'] = new_normalized_values
     return combined_history
 
-def write_combined_document_to_disk(out_path, combined_document):
+def write_combined_document_to_disk(out_json_path, out_csv_path,
+                                    combined_document):
+    write_combined_json_to_disk(out_json_path, combined_document)
+    append_to_combined_csv(out_csv_path, combined_document)
+
+def write_combined_json_to_disk(out_path, combined_document):
     out_file = open(out_path, 'w')
     out_file.write(json.dumps(combined_document))
+    out_file.close()
+
+def append_to_combined_csv(out_path, combined_document):
+    out_file = open(out_path, 'a')
+    for graph_name, histories in combined_document.iteritems():
+        if graph_name == 'fingerprints':
+            continue
+        for interval, history in histories.iteritems():
+            if 'interval' in history and 'first' in history and \
+               'values' in history and 'factor' in history:
+                current = datetime.strptime(history['first'],
+                                            '%Y-%m-%d %H:%M:%S')
+                for value in history['values']:
+                    if value:
+                        denormalized_value = value * history['factor']
+                        out_file.write('%s,%s,%s,%f\n' %
+                                       (graph_name, interval,
+                                        str(current), denormalized_value))
+                    current += timedelta(seconds=history['interval'])
     out_file.close()
 
 def write_fingerprints(out_path, details_documents):

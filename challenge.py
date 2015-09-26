@@ -165,7 +165,12 @@ def combine_downloads(downloads, addonly):
     and bridges.
     """
     documents = []
-    for download_dict in downloads:
+    for download_dict_json in downloads:
+        download_dict = None
+        try:
+            download_dict = download_dict_json()
+        except:
+            download_dict = download_dict_json
         documents.extend(download_dict['relays'])
         documents.extend(download_dict['bridges'])
     return combine_documents(documents, addonly)
@@ -302,22 +307,25 @@ def append_to_combined_csv(out_path, combined_document):
         if graph_name == 'fingerprints':
             continue
         for interval, history in histories.iteritems():
-            if 'interval' in history and 'first' in history and \
-               'values' in history and 'factor' in history:
-                current = datetime.strptime(history['first'],
+            if 'interval' in history and 'first' in history and 'values' in history and 'factor' in history:
+                if str(history['first']) == 'None':
+                    continue
+                else:
+                    current = datetime.strptime(history['first'],
                                             '%Y-%m-%d %H:%M:%S')
-                for value in history['values']:
-                    if value:
-                        denormalized_value = value * history['factor']
-                        out_file.write('%s,%s,%s,%f\n' %
-                                       (graph_name, interval,
-                                        str(current), denormalized_value))
-                    current += timedelta(seconds=history['interval'])
+                    for value in history['values']:
+                        if value:
+                            denormalized_value = value * history['factor']
+                            out_file.write('%s,%s,%s,%f\n' %
+                                           (graph_name, interval,
+                                            str(current), denormalized_value))
+                        current += timedelta(seconds=history['interval'])
     out_file.close()
 
 def write_fingerprints(out_path, details_documents):
     documents = []
-    for details in details_documents:
+    for details_json in details_documents:
+        details = details_json()
         documents.extend(details['relays'])
         documents.extend(details['bridges'])
     new_nodes = []
@@ -343,7 +351,8 @@ def sum_up_written_bytes(out_path, bandwidth_documents,
     if cutoff_datetime:
         cutoff = datetime.strptime(cutoff_datetime, '%Y-%m-%d %H:%M:%S')
     write_histories = []
-    for document in bandwidth_documents:
+    for document_json in bandwidth_documents:
+        document = document_json()
         for relay in document['relays']:
             if 'write_history' in relay:
                 write_histories.append(relay['write_history'])
@@ -380,8 +389,9 @@ def retain_only_new_or_faster(fingerprints, weights_documents,
     result_weights_documents = []
     start = datetime.strptime(start_datetime, '%Y-%m-%d %H:%M:%S')
     min_raise = int(min_raise_str)
-    for weights_document in weights_documents:
+    for weights_document_json in weights_documents:
         retain = True
+        weights_document = weights_document_json()
         if 'relays' in weights_document:
             for relay in weights_document['relays']:
                 if 'fingerprint' in relay and \
@@ -417,5 +427,3 @@ def retain_only_new_or_faster(fingerprints, weights_documents,
 
 if __name__ == '__main__':
     main()
-
-

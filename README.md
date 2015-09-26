@@ -7,8 +7,18 @@ We should provide them with graphs visualizing progress.
 Instructions
 ------------
 
-```
+
+Install python-requests 2.7.0+
+
+```bash
 sudo apt-get install python-requests
+python challenge.py
+```
+
+with pip:
+
+```bash
+pip install requests
 python challenge.py
 ```
 
@@ -30,4 +40,3 @@ The data format is pretty similar to the [Onionoo protocol specification] [Onion
 
 [EFF]:https://www.eff.org/torchallenge
 [Onionoo]:https://onionoo.torproject.org/
-
